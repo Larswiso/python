@@ -1,8 +1,8 @@
 #---------------  Bilder auswählen  ------------------
 
 
-Bild1 = 'Res/S4-1.jpg'
-Bild2 = 'Res/S4-2.jpg'
+Bild1 = 'Sonnenfleck1.1.jpg'
+Bild2 = 'Sonnenfleck1.2.jpg'
 
 
 #-----------------------------------------------------
