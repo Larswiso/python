@@ -1,3 +1,11 @@
+# Passwörter erstellen lassen
+# Passwörter überprüfen lassen nach Sicherheit
+# Passwörten in 'Passwörter.txt' speichern
+
+
+
+
+
 import random
 
 #-----------------------------------------------------------------------------------
