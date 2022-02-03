@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 x_breitengrad = []
 y_rotation = []
 
-with open('Res/Sonnenrotation.txt', 'r') as f:
+with open('Sonnenrotation.txt', 'r') as f:
         for line in f.readlines():
            data = line.strip()
            Zeitdifferenz, Rho, Höhe, Pos_von_Mittelachse, Breitengrad, alpha, Sonnenrotation = data.split("|")
