@@ -76,7 +76,7 @@ def onclick(event):
 
 
 
-    with open('Res/Ram.txt', 'a') as f:
+    with open('Ram.txt', 'a') as f:
         f.write(str(h) + "|" + str(r1) + "|" + str(x1) + "|" + str(y1) +"\n")
 
 
@@ -106,7 +106,7 @@ cv.line(img,(35,512),(990,512),(0,255,255),1) #wagerecht
 cv.line(img,(512,33),(512,990),(0,255,255),1) #senkrecht
 # 2 Linien
 
-with open('Res/Ram.txt', 'r') as f:
+with open('Ram.txt', 'r') as f:
         for line in f.readlines():
            data = line.strip()
            höhe, r_1, x_1, y_1= data.split("|")
@@ -136,7 +136,7 @@ def onclick(event):
         Rho = abs(Rho) 
     print(f"Rho: {Rho}px")
 
-    with open('Res/Ram.txt', 'a') as f:
+    with open('Ram.txt', 'a') as f:
         f.write(str(Rho) + "|" + str(0) + "|" + str(0) + "|" + str(0) +"\n")
 
 
@@ -184,7 +184,7 @@ def onclick(event):
     # print(f"R2: {r2}px")
 
 
-    with open('Res/Ram.txt', 'a') as f:
+    with open('Ram.txt', 'a') as f:
         f.write(str(r2) + "|" + str(0) + "|" + str(0) + "|" + str(0) +"\n")
 
 
@@ -201,7 +201,7 @@ plt.show()
 #-------------------------------------------------------------------
 ram_list = []
 
-with open('Res/Ram.txt', 'r') as f:
+with open('Ram.txt', 'r') as f:
         for line in f.readlines():
             data = line.strip()
             höhe, r_1, x_1, y_1= data.split("|")
@@ -221,9 +221,9 @@ r1 = ram_list[1]
 Rho = ram_list[4]
 r2 = ram_list[5]
 
-os.remove("Res/Ram.txt")
+os.remove("Ram.txt")
 
-with open('Res/Ram.txt', 'a') as f:
+with open('Ram.txt', 'a') as f:
         f.write(str(h) + "|" + str(r1) + "|" + str(Rho) + "|" + str(r2) +"\n")
 
 
@@ -235,7 +235,7 @@ with open('Res/Ram.txt', 'a') as f:
 
 
 
-with open('Res/Ram.txt', 'r') as f:
+with open('Ram.txt', 'r') as f:
         for line in f.readlines():
             data = line.strip()
             höhe, r_1, Rho, r_2= data.split("|")
@@ -374,9 +374,9 @@ print(f"Sonenrotation: ~{umlaufdauer} Tage")
 print("")
 #^ = Reihnfolge
 
-with open('Res/Sonnenrotationexcel.txt', 'a') as f:
+with open('Sonnenrotationexcel.txt', 'a') as f:
     f.write(zeitdifferenz + " Tage"+ "|" + inp_Rho +"px"+ "|" + inp_h +"px"+ "|" + inp_r1 + "px"+"|"+ inp_r2 + "px"+"|" + breitengrad + "°"+ "|" + alpha + "°"+ "|" + umlaufdauer +" Tage"+"\n")
-with open('Res/Sonnenrotation.txt', 'a') as f:
+with open('Sonnenrotation.txt', 'a') as f:
     f.write(zeitdifferenz + "|" + inp_Rho + "|" + inp_h + "|" + inp_r1 +"|"+ inp_r2 + "|" + breitengrad +"|" + alpha +"|" + umlaufdauer+"\n")
 os.remove("Res/Ram.txt")
 
@@ -392,7 +392,7 @@ ws.title = "Data"
 ws.append(["Zeitdifferenz", "Rho", "Höhe", "Pos. von Mittelachse (r1)", "Pos. von Mittelachse (r2)", "Breitengrad", "Winkel", "Sonnenrotation"])
 
 
-with open('Res/Sonnenrotationexcel.txt', 'r') as f:
+with open('Sonnenrotationexcel.txt', 'r') as f:
         for line in f.readlines():
            data = line.strip()
            wert = data.split("|")
