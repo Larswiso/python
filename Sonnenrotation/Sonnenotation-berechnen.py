@@ -22,9 +22,9 @@ from pathlib import Path
 from openpyxl import Workbook, load_workbook
 from sympy import sign
 
-my_ram_txt = Path('Res/Ram.txt')
+my_ram_txt = Path('Ram.txt')
 if my_ram_txt.is_file():
-    os.remove("Res/Ram.txt")
+    os.remove("Ram.txt")
 
 
 
@@ -378,7 +378,7 @@ with open('Sonnenrotationexcel.txt', 'a') as f:
     f.write(zeitdifferenz + " Tage"+ "|" + inp_Rho +"px"+ "|" + inp_h +"px"+ "|" + inp_r1 + "px"+"|"+ inp_r2 + "px"+"|" + breitengrad + "°"+ "|" + alpha + "°"+ "|" + umlaufdauer +" Tage"+"\n")
 with open('Sonnenrotation.txt', 'a') as f:
     f.write(zeitdifferenz + "|" + inp_Rho + "|" + inp_h + "|" + inp_r1 +"|"+ inp_r2 + "|" + breitengrad +"|" + alpha +"|" + umlaufdauer+"\n")
-os.remove("Res/Ram.txt")
+os.remove("Ram.txt")
 
 
 #--------------------------- Excel Tabelle ---------------------------
