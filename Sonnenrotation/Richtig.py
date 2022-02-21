@@ -1,5 +1,6 @@
 import math
 import numpy as np
+from openpyxl import Workbook, load_workbook
 
 
 inp_t1 = input("t1: ")
@@ -58,6 +59,15 @@ sin_02 =  math.degrees(np.arcsin(inp_r2/inp_Rho))
 alpha = sin_01 + sin_02
 umlaufdauer = (360/alpha)*total_time_day
 
+inp_r1 = str(inp_r1)
+inp_r2 = str(inp_r2)
+inp_Rho = str(inp_Rho)
+inp_h = str(inp_h)
+alpha = str(round(alpha, 2))
+umlaufdauer = str(round(umlaufdauer, 3))
+zeitdifferenz = str(round(total_time_day, 3))
+breitengrad = str(round(breitengrad, 2))
+
 print(f"R: {inp_R}")
 print(f"Rho: {inp_Rho}")
 print(f"h: {inp_h}")
@@ -66,3 +76,31 @@ print(f"Breitengrad: {breitengrad}°")
 print(f"überschrittene Winkel(Alpha): ~{alpha}°")
 print("=======================================")
 print(f"Sonenrotation: ~{umlaufdauer} Tage")
+
+if float(umlaufdauer) > 24.0 and float(umlaufdauer) < 34.5:
+    with open('Res/Sonnenrotationexcel.txt', 'a') as f:
+        f.write(zeitdifferenz + " Tage"+ "|" + inp_Rho +"px"+ "|" + inp_h +"px"+ "|" + inp_r1 + "px"+"|"+ inp_r2 + "px"+"|" + breitengrad + "|" + alpha + "|" + umlaufdauer +" Tage"+"\n")
+    with open('Res/Sonnenrotation.txt', 'a') as f:
+        f.write(zeitdifferenz + "|" + inp_Rho + "|" + inp_h + "|" + inp_r1 +"|"+ inp_r2 + "|" + breitengrad +"|" + alpha +"|" + umlaufdauer+"\n")
+else:
+    print("\n"+"Fehler: [Umlaufdauer unmöglich!]"+"\n"+"-------------------------------"+"\n"+"Daten wurden nicht gespeichert!"+"\n"+"Auf Wiedersehen!")
+
+wb = Workbook()
+ws = wb.active
+ws.title = "Data"
+
+ws.append(["Zeitdifferenz", "Rho", "Höhe", "Pos. von Mittelachse (r1)", "Pos. von Mittelachse (r2)", "Breitengrad", "Winkel", "Sonnenrotation"])
+
+
+with open('Res/Sonnenrotationexcel.txt', 'r') as f:
+        for line in f.readlines():
+           data = line.strip()
+           wert = data.split("|")
+           ws.append(wert)
+
+
+
+wb.save("Sonnenflecken-Daten.xlsx")
+print("")
+print("Daten wurden in Excel gespeichert")
+print("")
