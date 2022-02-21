@@ -1,14 +1,32 @@
+# Autor: Lars Wisotzky
+
+# Dieses Programm ist NUR für die Bilder von SDO zugeschnitten.
+# https://sdo.gsfc.nasa.gov/data/aiahmi/
+
+
+# Folgende Module müssen über pip nachinstalliert werden: 
+# pip install PIL
+# pip install numpy
+# pip install opencv-python
+# pip install matplotlib
+# pip install openpyxl
+# pip install sympy
+# pip install imutils
+
+
+
+
+
 #---------------  Bilder auswählen  ------------------
 
 
-Bild1 = 'Sonnenfleck1.1.jpg'
-Bild2 = 'Sonnenfleck1.2.jpg'
+Bild1 = 'Res/S1-1.jpg'
+Bild2 = 'Res/S1-2.jpg'
+
+img_länge_px = 1024
 
 
 #-----------------------------------------------------
-
-
-
 
 
 
@@ -21,132 +39,183 @@ import os
 from pathlib import Path
 from openpyxl import Workbook, load_workbook
 from sympy import sign
+from PIL import Image
+from numpy import append, average
+from sympy import minimum
+import imutils
 
-my_ram_txt = Path('Ram.txt')
+my_ram_txt = Path('Res/Ram.txt')
 if my_ram_txt.is_file():
-    os.remove("Ram.txt")
+    os.remove("Res/Ram.txt")
+    print("Ram gelöscht")
 
 
 
-print("")
-print("Kordinaten:")
-print("---")
+#------------------------------------------------------
+
+# load the image, convert it to grayscale, blur it slightly,
+# and threshold it
+image = cv.imread(Bild1)
+gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+blurred = cv.GaussianBlur(gray, (5, 5), 0)
+thresh = cv.threshold(blurred, 2, 255, cv.THRESH_BINARY)[1]
+
+# find contours in the thresholded image
+cnts = cv.findContours(thresh.copy(), cv.RETR_EXTERNAL,
+	cv.CHAIN_APPROX_SIMPLE)
+cnts = imutils.grab_contours(cnts)
+# loop over the contours
+for c in cnts:
+	# compute the center of the contour
+	M = cv.moments(c)
+	cX = int(M["m10"] / M["m00"])
+	cY = int(M["m01"] / M["m00"])
+	# draw the contour and center of the shape on the image
+	cv.drawContours(image, [c], -1, (0, 255, 0), 2)
+	cv.circle(image, (cX, cY), 2, (255, 0, 255), -1)
+	cv.putText(image, "center", (cX - 20, cY - 20),
+		cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+	# show the image
+#cv2.imshow("Image", image)
+cv.waitKey(0)
+
+
+#------------------------------------------  R festlegen ------------------------------------------------
+im = Image.open(Bild1)
+px = im.load()
+
+height = cY
+stop = False
+R = 1
+
+while stop == False:
+    if px[R, height] > 0:
+        stop = True
+    else:
+        R = R + 1
+if R <= 0:
+    R = abs(R)
+ 
+R = cY - R
 
 
 
-img = cv.imread(Bild1)
-gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
-gray = np.float32(gray)
-dst = cv.cornerHarris(gray,2,3,0.04)
-dst = cv.dilate(dst,None)
-
-
-img[dst>0.01*dst.max()]=[0,0,255]
-# Punkte finden
-
-cv.line(img,(35,512),(990,512),(0,255,255),1) #wagerecht
-cv.line(img,(512,33),(512,990),(0,255,255),1) #senkrecht
-# 2 Linien
-
-img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
-
-
-fig, ax = plt.subplots()
-def onclick(event):
-    x1, y1= event.xdata, event.ydata 
-
-    x1 = int(x1)
-    y1 = int(y1) 
-    #print(x1,"|", y1)
 
 
 
-    h = 512 - y1
-     
-    print(f"Höhe: {h}px")
 
-    r1 = 512 - x1
-    print(f"r1: {r1}px")
-    # if r1 <= 0:
-    #     r1 = abs(r1)
-    # print(f"R1: {r1}px")
+#------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------
 
 
 
 
 
 
-    with open('Ram.txt', 'a') as f:
-        f.write(str(h) + "|" + str(r1) + "|" + str(x1) + "|" + str(y1) +"\n")
 
 
-fig.canvas.mpl_connect('button_press_event', onclick)
-#click kordinaten
 
-plt.title("EINEN Sonnenfleck auswählen und Fenster verlasen     (1/3)")
-plt.subplot(1, 1, 1)
-plt.imshow(img_rgb)
-plt.show()
+
+
+try:
+    img = cv.imread(Bild1)
+    gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
+    gray = np.float32(gray)
+    dst = cv.cornerHarris(gray,2,3,0.04)
+    dst = cv.dilate(dst,None)
+
+
+    #img[dst>0.01*dst.max()]=[0,0,255]
+    # Punkte finden
+
+    cv.line(img,(1,cY),(1024,cY),(0,255,255),1) #line horizontal
+    cv.line(img,(cX,1),(cX,1024),(0,255,255),1) #line vertical
+    # 2 Linien
+
+    img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+
+
+    fig, ax = plt.subplots()
+    def onclick(event):
+        x1, y1= event.xdata, event.ydata 
+
+        x1 = int(x1)
+        y1 = int(y1) 
+        print(x1,"|", y1)
+
+        
+
+        h =512 - y1
+        print("")
+        print("Kordinaten:")
+        print("---")
+
+
+        print(f"Höhe: {h}px")
+
+        r1 = int(cX) - x1
+        print(f"r1: {r1}px")
+        # if r1 <= 0:
+        #     r1 = abs(r1)
+        # print(f"R1: {r1}px")
+        inp_R = float(478)
+        breitengrad = math.degrees(np.arcsin(h/inp_R))
+        breitengrad = str(round(breitengrad, 2))
+        print(f"Breitengrad: {breitengrad}°")
+
+
+
+
+
+
+
+        with open('Res/Ram.txt', 'a') as f:
+            f.write(str(h) + "|" + str(r1) + "|" + str(x1) + "|" + str(y1) +"\n")
+
+
+    fig.canvas.mpl_connect('button_press_event', onclick)
+    #click kordinaten
+
+    plt.title("EINEN Sonnenfleck auswählen und Fenster verlasen     (1/2)")
+    plt.subplot(1, 1, 1)
+    plt.imshow(img_rgb)
+    plt.show()
 
 
 #-------------------  Rho auswählen  -------------------
 
-print("---")
-img = cv.imread(Bild1)
-gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
-gray = np.float32(gray)
-dst = cv.cornerHarris(gray,2,3,0.04)
-dst = cv.dilate(dst,None)
 
+    with open('Res/Ram.txt', 'r') as f:
+            for line in f.readlines():
+                data = line.strip()
+                höhe, r_1, Rho, r_2= data.split("|")
 
-img[dst>0.01*dst.max()]=[0,0,255]
-# Punkte finden
+    im = Image.open(Bild1)
+    px = im.load()
 
-cv.line(img,(35,512),(990,512),(0,255,255),1) #wagerecht
-cv.line(img,(512,33),(512,990),(0,255,255),1) #senkrecht
-# 2 Linien
+    höhe = float(cY)- float(höhe)
+    stop = False
+    Rho = 1
 
-with open('Ram.txt', 'r') as f:
-        for line in f.readlines():
-           data = line.strip()
-           höhe, r_1, x_1, y_1= data.split("|")
-        
-        
-        höhe = int(höhe)
-        y_1 = int(y_1)
-        cv.line(img,(35, y_1),(990, y_1),(0,255,255),1)
+    while stop == False:
+        if px[Rho, höhe] > 0:
+            stop = True
+        else:
+            Rho = Rho + 1
+    print(Rho,"|", höhe)
+    Rho = int(cX) - Rho
 
-
-
-img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
-
-
-fig, ax = plt.subplots()
-def onclick(event):
-    x1, y1= event.xdata, event.ydata
-
-    x1 = int(x1)
-    y1 = int(y1) 
-    #print(x1,"|", y1)
-
-
-
-    Rho = 512 - x1
     if Rho <= 0:
         Rho = abs(Rho) 
     print(f"Rho: {Rho}px")
 
-    with open('Ram.txt', 'a') as f:
+    with open('Res/Ram.txt', 'a') as f:
         f.write(str(Rho) + "|" + str(0) + "|" + str(0) + "|" + str(0) +"\n")
+except FileNotFoundError:
+    print("\n"+"Fehler: [keine Eingabe]"+"\n"+"Auf Wiedersehen!")
+    quit()
 
-
-fig.canvas.mpl_connect('button_press_event', onclick)
-#click kordinaten
-
-plt.title("Rho auswählen und Fenster verlasen     (2/3)")
-plt.subplot(1, 1, 1)
-plt.imshow(img_rgb)
-plt.show()
 
 #--------------------------------------------   Bild 2   -------------------------------------------
 print("---")
@@ -158,12 +227,18 @@ dst = cv.cornerHarris(gray,2,3,0.04)
 dst = cv.dilate(dst,None)
 
 
-img[dst>0.01*dst.max()]=[0,0,255]
+#img[dst>0.01*dst.max()]=[0,0,255]
 # Punkte finden
 
 cv.line(img,(35,512),(990,512),(0,255,255),1) #wagerecht
 cv.line(img,(512,33),(512,990),(0,255,255),1) #senkrecht
 # 2 Linien
+
+with open('Res/Ram.txt', 'r') as f:
+            for line in f.readlines():
+                data = line.strip()
+                höhe, r_1, Rho, r_2= data.split("|")
+
 
 img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
 
@@ -177,31 +252,29 @@ def onclick(event):
     #print(x1,"|", y1)
 
 
-    r2 = 512 - x1
+    r2 = int(cX) - x1
     print(f"r2: {r2}px")
     # if r2 <= 0:
     #     r2 = abs(r2)
     # print(f"R2: {r2}px")
 
 
-    with open('Ram.txt', 'a') as f:
+    with open('Res/Ram.txt', 'a') as f:
         f.write(str(r2) + "|" + str(0) + "|" + str(0) + "|" + str(0) +"\n")
 
 
 fig.canvas.mpl_connect('button_press_event', onclick)
 #click kordinaten
 
-plt.title("Gleichen rotierten Sonnenfleck auswählen und Fenster verlasen     (3/3)")
+plt.title("Gleichen rotierten Sonnenfleck auswählen und Fenster verlasen     (2/2)")
 plt.subplot(1, 1, 1)
 plt.imshow(img_rgb)
 plt.show()
 
-
-
 #-------------------------------------------------------------------
 ram_list = []
 
-with open('Ram.txt', 'r') as f:
+with open('Res/Ram.txt', 'r') as f:
         for line in f.readlines():
             data = line.strip()
             höhe, r_1, x_1, y_1= data.split("|")
@@ -209,9 +282,12 @@ with open('Ram.txt', 'r') as f:
             ram_list.append(r_1)
             ram_list.append(x_1)
             ram_list.append(y_1)
-        
-        for x in range(6):
-            ram_list.remove("0")
+        try:
+            for x in range(6):
+                ram_list.remove("0")
+        except ValueError:
+            print("\n"+"Fehler: [keine Eingabe]"+"\n"+"Auf Wiedersehen!")
+            quit()
 
         #print(ram_list)
         # Liste besteht aus: h, r1, x1, y1, Rho, r2
@@ -221,9 +297,9 @@ r1 = ram_list[1]
 Rho = ram_list[4]
 r2 = ram_list[5]
 
-os.remove("Ram.txt")
+os.remove("Res/Ram.txt")
 
-with open('Ram.txt', 'a') as f:
+with open('Res/Ram.txt', 'a') as f:
         f.write(str(h) + "|" + str(r1) + "|" + str(Rho) + "|" + str(r2) +"\n")
 
 
@@ -235,29 +311,18 @@ with open('Ram.txt', 'a') as f:
 
 
 
-with open('Ram.txt', 'r') as f:
+with open('Res/Ram.txt', 'r') as f:
         for line in f.readlines():
             data = line.strip()
             höhe, r_1, Rho, r_2= data.split("|")
 
 
 
-inp_R = 478
-inp_h = int(höhe)
-inp_Rho = int(Rho)
-inp_r1 = int(r_1)
-inp_r2 = int(r_2)
-
-
-
-
-
-
-
-
-
-
-
+inp_R = R
+inp_h = float(höhe)
+inp_Rho = float(Rho)
+inp_r1 = float(r_1)
+inp_r2 = float(r_2)
 
 
 
@@ -286,8 +351,8 @@ hour = list_t1[3]
 min = list_t1[4]
 sec = list_t1[5]
 
-year= year*3153600
-mon = mon*2592000
+year= year*31536000
+mon = mon*2628000
 day = day*86400
 hour = hour*3600
 min = min*60
@@ -303,8 +368,8 @@ hour2 = list_t2[3]
 min2 = list_t2[4]
 sec2 = list_t2[5]
 
-year2= year2*3153600
-mon2 = mon2*2592000
+year2= year2*31536000
+mon2 = mon2*2628000
 day2 = day2*86400
 hour2 = hour2*3600
 min2 = min2*60
@@ -374,11 +439,18 @@ print(f"Sonenrotation: ~{umlaufdauer} Tage")
 print("")
 #^ = Reihnfolge
 
-with open('Sonnenrotationexcel.txt', 'a') as f:
-    f.write(zeitdifferenz + " Tage"+ "|" + inp_Rho +"px"+ "|" + inp_h +"px"+ "|" + inp_r1 + "px"+"|"+ inp_r2 + "px"+"|" + breitengrad + "°"+ "|" + alpha + "°"+ "|" + umlaufdauer +" Tage"+"\n")
-with open('Sonnenrotation.txt', 'a') as f:
-    f.write(zeitdifferenz + "|" + inp_Rho + "|" + inp_h + "|" + inp_r1 +"|"+ inp_r2 + "|" + breitengrad +"|" + alpha +"|" + umlaufdauer+"\n")
-os.remove("Ram.txt")
+
+if float(umlaufdauer) > 24.0 and float(umlaufdauer) < 34.5:
+    with open('Res/Sonnenrotationexcel.txt', 'a') as f:
+        f.write(zeitdifferenz + " Tage"+ "|" + inp_Rho +"px"+ "|" + inp_h +"px"+ "|" + inp_r1 + "px"+"|"+ inp_r2 + "px"+"|" + breitengrad + "|" + alpha + "|" + umlaufdauer +" Tage"+"\n")
+    with open('Res/Sonnenrotation.txt', 'a') as f:
+        f.write(zeitdifferenz + "|" + inp_Rho + "|" + inp_h + "|" + inp_r1 +"|"+ inp_r2 + "|" + breitengrad +"|" + alpha +"|" + umlaufdauer+"\n")
+else:
+    print("\n"+"Fehler: [Umlaufdauer unmöglich!]"+"\n"+"-------------------------------"+"\n"+"Daten wurden nicht gespeichert!"+"\n"+"Auf Wiedersehen!")
+
+
+
+os.remove("Res/Ram.txt")
 
 
 #--------------------------- Excel Tabelle ---------------------------
@@ -392,7 +464,7 @@ ws.title = "Data"
 ws.append(["Zeitdifferenz", "Rho", "Höhe", "Pos. von Mittelachse (r1)", "Pos. von Mittelachse (r2)", "Breitengrad", "Winkel", "Sonnenrotation"])
 
 
-with open('Sonnenrotationexcel.txt', 'r') as f:
+with open('Res/Sonnenrotationexcel.txt', 'r') as f:
         for line in f.readlines():
            data = line.strip()
            wert = data.split("|")
