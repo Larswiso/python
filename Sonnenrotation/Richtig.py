@@ -1,7 +1,7 @@
 import math
 import numpy as np
 from openpyxl import Workbook, load_workbook
-
+from sympy import sign
 
 inp_t1 = input("t1: ")
 inp_t2 = input("t2: ")
@@ -56,7 +56,12 @@ breitengrad = math.degrees(np.arcsin(inp_h/inp_R))
 sin_01 =  math.degrees(np.arcsin(inp_r1/inp_Rho))
 sin_02 =  math.degrees(np.arcsin(inp_r2/inp_Rho))
 
-alpha = sin_01 + sin_02
+if sign(sin_01) == sign(sin_02):
+    alpha = sin_02 - sin_01
+else:
+    alpha = abs(sin_01) + abs(sin_02)
+
+alpha = abs(alpha)
 umlaufdauer = (360/alpha)*total_time_day
 
 inp_r1 = str(inp_r1)
@@ -79,7 +84,7 @@ print(f"Sonenrotation: ~{umlaufdauer} Tage")
 
 if float(umlaufdauer) > 24.0 and float(umlaufdauer) < 34.5:
     with open('Res/Sonnenrotationexcel.txt', 'a') as f:
-        f.write(zeitdifferenz + " Tage"+ "|" + inp_Rho +"cm"+ "|" + inp_h +"cm"+ "|" + inp_r1 + "cm"+"|"+ inp_r2 + "cm"+"|" + breitengrad + "|" + alpha + "|" + umlaufdauer +" Tage"+"\n")
+        f.write(zeitdifferenz + " Tage"+ "|" + inp_Rho +"px"+ "|" + inp_h +"px"+ "|" + inp_r1 + "px"+"|"+ inp_r2 + "px"+"|" + breitengrad + "|" + alpha + "|" + umlaufdauer +" Tage"+"\n")
     with open('Res/Sonnenrotation.txt', 'a') as f:
         f.write(zeitdifferenz + "|" + inp_Rho + "|" + inp_h + "|" + inp_r1 +"|"+ inp_r2 + "|" + breitengrad +"|" + alpha +"|" + umlaufdauer+"\n")
 else:
