@@ -79,7 +79,7 @@ print(f"Sonenrotation: ~{umlaufdauer} Tage")
 
 if float(umlaufdauer) > 24.0 and float(umlaufdauer) < 34.5:
     with open('Res/Sonnenrotationexcel.txt', 'a') as f:
-        f.write(zeitdifferenz + " Tage"+ "|" + inp_Rho +"px"+ "|" + inp_h +"px"+ "|" + inp_r1 + "px"+"|"+ inp_r2 + "px"+"|" + breitengrad + "|" + alpha + "|" + umlaufdauer +" Tage"+"\n")
+        f.write(zeitdifferenz + " Tage"+ "|" + inp_Rho +"cm"+ "|" + inp_h +"cm"+ "|" + inp_r1 + "cm"+"|"+ inp_r2 + "cm"+"|" + breitengrad + "|" + alpha + "|" + umlaufdauer +" Tage"+"\n")
     with open('Res/Sonnenrotation.txt', 'a') as f:
         f.write(zeitdifferenz + "|" + inp_Rho + "|" + inp_h + "|" + inp_r1 +"|"+ inp_r2 + "|" + breitengrad +"|" + alpha +"|" + umlaufdauer+"\n")
 else:
