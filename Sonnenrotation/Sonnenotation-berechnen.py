@@ -97,6 +97,7 @@ if R <= 0:
     R = abs(R)
  
 R = cY - R
+print(R)
 
 
 
@@ -159,7 +160,8 @@ try:
         # if r1 <= 0:
         #     r1 = abs(r1)
         # print(f"R1: {r1}px")
-        inp_R = float(478)
+        
+        inp_R = R
         breitengrad = math.degrees(np.arcsin(h/inp_R))
         breitengrad = str(round(breitengrad, 2))
         print(f"Breitengrad: {breitengrad}°")
