@@ -1,3 +1,11 @@
+# Author: Lars Wisotzky
+
+# With this script it is possible to create a Tkinter GUI from a simple 'input()'.
+
+# Rule, only according to the following scheme can be converted:
+# <variable> = input()
+
+
 from tkinter import *
 from pathlib import Path
 import sys
