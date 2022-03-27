@@ -6,6 +6,7 @@
 # <variable> = input()
 
 
+
 from tkinter import *
 from pathlib import Path
 import sys
@@ -13,8 +14,6 @@ import random
 
 
 ownPath = sys.path[0]
-
-
 
 def myrandoName(chars, repeats):
     final_name = ""
@@ -24,88 +23,103 @@ def myrandoName(chars, repeats):
         final_name = final_name + char
     return final_name
 
-def decoder_for_list(index, list):
-    return list[index]
+
+class GUI_MAKER:
+
+    def __init__(self, futurePath, changes):
+        
+        self.futurePath = futurePath
+        self.changes = changes
+        
+        with open(self.futurePath, 'a') as f:
+            self.final_code = """"""
+
+            self.items_len = len(self.changes)
+
+            self.fistPhase = self.containerEntryfields(self.items_len)
+            self.secondPhase = self.containerLabels(self.items_len, self.changes)
+            self.thirdPhase = self.containerEntryfields_show(self.items_len)
+            self.fourthPhase = self.containerEntryfields_grid(self.items_len)
+
+            self.final_code = self.fistPhase + self.secondPhase + self.thirdPhase + self.fourthPhase
+            f.write(self.final_code)
+        
+    def myrandoName(self, chars, repeats):
+        self.final_name = ""
+        self.name_list = random.choices(chars,k=repeats)
+
+        for char in self.name_list:
+            self.final_name = self.final_name + char
+        return self.final_name
+
+    def decoder_for_list(self, index, list):
+        return list[index]
 
 
-def containerEntryfields(repeats):
-   after_code = """"""
-   after_code = after_code + """
+    def containerEntryfields(self, repeats):
+        self.after_code = """"""
+        self.after_code = self.after_code + """
 from tkinter import *
 def show_entry_fields():""" 
-   for repeat in range(0,repeats):
-      base_code = f"""
+        for repeat in range(0,repeats):
+            self.base_code = f"""
 
-   global entry_field{repeat}
-   entry_field{repeat} = e{repeat}.get() # You can use this variable later 
-   print(entry_field{repeat})
-         """
-         
-      after_code = after_code + base_code
-   after_code = after_code + """
-   master.destroy()
-         
+    global entry_field{repeat}
+    entry_field{repeat} = e{repeat}.get() # You can use this variable later 
+    print(entry_field{repeat})
+                """
+                
+            self.after_code = self.after_code + self.base_code
+        self.after_code = self.after_code + """
+    master.destroy()
+                
 master = Tk()""" 
-   #print(after_code)
-   return after_code
+        #print(after_code)
+        return self.after_code
 
 
-def containerLabels(repeats, change_list):
-   after_code = """"""
+    def containerLabels(self, repeats, change_list):
+        self.after_code = """"""
 
-   for repeat in range(0,repeats):
-      change = decoder_for_list(repeat, change_list)
-      base_code = f"""
-Label(master, text="{change}:").grid(row={repeat})"""       
-      after_code = after_code + base_code
-   #print(after_code)
-   return after_code
+        for repeat in range(0,repeats):
+            self.change = self.decoder_for_list(repeat, change_list)
+            self.base_code = f"""
+Label(master, text="{self.change}:").grid(row={repeat})"""       
+            self.after_code = self.after_code + self.base_code
+        #print(after_code)
+        return self.after_code
 
-def containerEntryfields_show(repeats):
-   after_code = """"""
+    def containerEntryfields_show(self, repeats):
+        self.after_code = """"""
 
-   for repeat in range(0,repeats):
-      base_code = f"""
+        for repeat in range(0,repeats):
+            self.base_code = f"""
 e{repeat} = Entry(master)"""       
-      after_code = after_code + base_code
-   #print(after_code)
-   return after_code
+            self.after_code = self.after_code + self.base_code
+        #print(after_code)
+        return self.after_code
 
 
 
-def containerEntryfields_grid(repeats):
-   after_code = """"""
+    def containerEntryfields_grid(self, repeats):
+        self.after_code = """"""
 
-   for repeat in range(0,repeats):
-      base_code = f"""
+        for repeat in range(0,repeats):
+            self.base_code = f"""
 e{repeat}.grid(row={repeat}, column=1)"""       
-      after_code = after_code + base_code
-      global row 
-      row = repeat + 2
-   after_code = after_code + f"""
+            self.after_code = self.after_code + self.base_code
+ 
+            self.row = repeat + 2
+        self.after_code = self.after_code + f"""
 
-Button(master, text='Quit', command=master.destroy).grid(row={row}, column=0, sticky=W, pady=4)
-Button(master, text='Continue', command=show_entry_fields).grid(row={row}, column=2, sticky=W, pady=4)
+Button(master, text='Quit', command=master.destroy).grid(row={self.row}, column=0, sticky=W, pady=4)
+Button(master, text='Continue', command=show_entry_fields).grid(row={self.row}, column=2, sticky=W, pady=4)
 
 mainloop()"""
-   #print(after_code)
-   return after_code
-
-
-def make_second_file(futurePath, changes):
-   with open(futurePath, 'a') as f:
-      final_code = """"""
-
-      items_len = len(changes)
-
-      fistPhase = containerEntryfields(items_len)
-      secondPhase = containerLabels(items_len, changes)
-      thirdPhase = containerEntryfields_show(items_len)
-      fourthPhase = containerEntryfields_grid(items_len)
-
-      final_code = fistPhase + secondPhase + thirdPhase + fourthPhase
-      f.write(final_code)
+        #print(after_code)
+        return self.after_code
    
+
 
 def file_scan(filepath, futureFilepath):
    times = 0
@@ -124,15 +138,11 @@ def file_scan(filepath, futureFilepath):
                      times = times + 1
                      var_name.append(name_of_inp)
 
-   #print(f'Your "{futureFilename}" was created!')
-   make_second_file(futureFilepath, var_name)
-
+   GUI_MAKER(futureFilepath, var_name)
 
 
 def main(filepath, futureFilename, futureFilepath):
-   stage1 = False
-   stage2 = False
-   stage3 = False
+   
    chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
    filepath = Path(filepath)
@@ -141,7 +151,6 @@ def main(filepath, futureFilename, futureFilepath):
       print("Error: File not found!")
 
    else:
-      stage1 = True
 
       if futureFilename == "" and futureFilepath == "":
          futPath = ownPath
@@ -164,13 +173,10 @@ def main(filepath, futureFilename, futureFilepath):
          quit
 
       file_scan(filepath, total_path)
+      print(f"Your File successfully created! Path: {total_path}")
          
-         
 
-   
-
-
-
+# Own Interface
 
 def show_entry_fields():
 
