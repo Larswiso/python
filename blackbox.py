@@ -2,11 +2,13 @@
 Author: Lars Wisotzky
 This program is inspired by the Blackbox Chrome extension.
 
+Blackbox is the fastest way to copy text from videos, images, PDFs, anything... ever!
+
 Setup everything:
 1) pip install numpy, pytesseract, Pillow, keyboard, clipboard, win10toast, opencv-python
 2) Get tesseract from here: https://github.com/UB-Mannheim/tesseract/wiki
 3) Select the filepath from tesseract.exe and paste in the PATH (System Environment Variables)
-4) Replace in line 57 r'...' with your filepath from tesseract.exe
+4) Replace in line 59 r'...' with your filepath from tesseract.exe
 '''
 
 import time
