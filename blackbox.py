@@ -1,3 +1,14 @@
+'''
+Author: Lars Wisotzky
+This program is inspired by the Blackbox Chrome extension.
+
+Setup everything:
+1) pip install numpy, pytesseract, Pillow, keyboard, clipboard, win10toast, opencv-python
+2) Get tesseract from here: https://github.com/UB-Mannheim/tesseract/wiki
+3) Select the filepath from tesseract.exe and paste in the PATH (System Environment Variables)
+4) Replace in line 57 r'...' with your filepath from tesseract.exe
+'''
+
 import time
 import os
 
@@ -5,9 +16,13 @@ import cv2
 import numpy as np
 import pytesseract
 from PIL import ImageGrab
-import matplotlib.pyplot as plt
 import keyboard
 import clipboard
+from win10toast import ToastNotifier
+
+
+
+print("Running ...")
 
 def blackbox():
     # make screenshot
@@ -16,19 +31,19 @@ def blackbox():
 
     # get 4 coordinates
     filepath = r"E:/Development/Python/resources/crop.jpg"
-    fig, ax = plt.subplots()
     cords = []
-    def onclick(event):
-        x, y= event.xdata, event.ydata 
-        x = int(x)
-        y = int(y) 
-        cords.append(x)
-        cords.append(y)
-    fig.canvas.mpl_connect('button_press_event', onclick)
-    plt.title("click twice and then close")
-    plt.imshow(img)
-    plt.show()
 
+    def click_event(event, x, y, flags, params):
+        if event == cv2.EVENT_LBUTTONDOWN:
+            x = int(x)
+            y = int(y) 
+            cords.append(x)
+            cords.append(y)
+
+    cv2.imshow('image', img)
+    cv2.setMouseCallback('image', click_event)
+    cv2.waitKey(0)
+    
     # crop image
     x1 = cords[0]
     y1 = cords[1]
@@ -45,6 +60,11 @@ def blackbox():
 
     # paste text into clipboard
     clipboard.copy(string)
+
+    # Toast-Notification
+    toaster = ToastNotifier()
+    toaster.show_toast(title="Paste text with Ctrl + V", msg="Blackbox", duration=2.5, threaded=True)
+        
 
 while True:
     if keyboard.is_pressed('alt') == True and keyboard.is_pressed('s') == True:
